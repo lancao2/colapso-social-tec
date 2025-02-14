@@ -17,9 +17,9 @@ export default function PinPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [hashPin, setHashPin] = useState("");
-  const hashPinCidade = "12345";
-  const hashPinFloresta = "67890";
-  const hashPinMar = "13579";
+  const hashPinCidade = "13476";
+  const hashPinFloresta = "97521";
+  const hashPinMar = "14386";
 
   const handlePinChange = (index: number, value: string) => {
     if (!selectedOption) {
