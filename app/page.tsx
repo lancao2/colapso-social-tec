@@ -1,16 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Building2, TreePine, Waves, CheckCircle, XCircle } from "lucide-react";
+import { Building2, TreePine, Waves, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type Option = "cidade" | "floresta" | "mar";
-
-const hashPinCidade = "13400";
-const hashPinFloresta = "97521";
-const hashPinMar = "14386";
 
 export default function PinPage() {
   const [pin, setPin] = useState(["", "", "", "", ""]);
@@ -21,6 +17,9 @@ export default function PinPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [hashPin, setHashPin] = useState("");
+  const hashPinCidade = "12345";
+  const hashPinFloresta = "67890";
+  const hashPinMar = "13579";
 
   const handlePinChange = (index: number, value: string) => {
     if (!selectedOption) {
@@ -31,6 +30,13 @@ export default function PinPage() {
     const newPin = [...pin];
     newPin[index] = value.replace(/\D/g, "").slice(0, 1);
     setPin(newPin);
+
+    // Check if the entered digit is correct
+    const isCorrect = newPin[index] === hashPin[index];
+    const input = document.getElementById(`pin-${index}`) as HTMLInputElement;
+    if (input) {
+      input.style.borderColor = isCorrect ? "" : "rgb(239 68 68)"; // tailwind red-500
+    }
 
     if (value && index < 4) {
       const nextInput = document.getElementById(`pin-${index + 1}`);
@@ -51,6 +57,7 @@ export default function PinPage() {
   const handleOptionSelect = (option: Option) => {
     setSelectedOption(option);
     setShowWarning(false);
+    setPin(["", "", "", "", ""]);
     switch (option) {
       case "cidade":
         setHashPin(hashPinCidade);
@@ -68,14 +75,14 @@ export default function PinPage() {
     if (pin.every((digit) => digit !== "") && selectedOption) {
       if (pin.join("") === hashPin) {
         setPinStatus("success");
+        setIsModalOpen(true);
       } else {
-        setPinStatus("error");
+        setPinStatus("idle");
       }
-      setIsModalOpen(true);
     } else {
       setPinStatus("idle");
     }
-  }, [pin, selectedOption]);
+  }, [pin, selectedOption, hashPin]);
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -101,7 +108,7 @@ export default function PinPage() {
                 value={digit}
                 onChange={(e) => handlePinChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="text-4xl text-center w-14 h-14"
+                className="text-4xl text-center w-14 h-14 transition-all duration-200"
                 autoComplete="off"
                 disabled={!selectedOption}
               />
@@ -117,30 +124,15 @@ export default function PinPage() {
         </div>
       </div>
       <div className="w-full max-w-md">
-        <p
-          className={`text-md mb-4 text-center px-3 ${
-            !selectedOption ? "text-red-600" : "text-gray-600"
-          }`}
-        >
-          {!selectedOption ? (
-            <p>
-              Selecione um dos três cenarios disponiveis a baixo antes de
-              informar o PIN
-            </p>
-          ) : (
-            <p>
-              Use o manual para desvendar os 5 digitos do PIN, <br />
-              lembre-se a confiança é a chave.
-            </p>
-          )}
+        <p className="text-sm text-gray-600 mb-4 text-center">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
         </p>
         <div className="grid grid-cols-3 gap-4">
           <Button
             variant="outline"
             className={`flex flex-col items-center justify-center h-20 ${
-              selectedOption === "cidade"
-                ? "bg-black text-white hover:bg-black hover:text-white"
-                : ""
+              selectedOption === "cidade" ? "bg-black text-white" : ""
             } ${
               !selectedOption && showWarning ? "border-red-500 border-2" : ""
             }`}
@@ -152,9 +144,7 @@ export default function PinPage() {
           <Button
             variant="outline"
             className={`flex flex-col items-center justify-center h-20 ${
-              selectedOption === "floresta"
-                ? "bg-black text-white hover:bg-black hover:text-white"
-                : ""
+              selectedOption === "floresta" ? "bg-black text-white" : ""
             } ${
               !selectedOption && showWarning ? "border-red-500 border-2" : ""
             }`}
@@ -166,9 +156,7 @@ export default function PinPage() {
           <Button
             variant="outline"
             className={`flex flex-col items-center justify-center h-20 ${
-              selectedOption === "mar"
-                ? "bg-black text-white hover:bg-black hover:text-white"
-                : ""
+              selectedOption === "mar" ? "bg-black text-white" : ""
             } ${
               !selectedOption && showWarning ? "border-red-500 border-2" : ""
             }`}
@@ -180,27 +168,15 @@ export default function PinPage() {
         </div>
       </div>
 
-      {isModalOpen && (
+      {isModalOpen && pinStatus === "success" && (
         <div
-          className={`fixed inset-0 flex items-center justify-center z-50 ${
-            pinStatus === "success" ? "bg-green-500" : "bg-red-500"
-          }`}
+          className="fixed inset-0 flex items-center justify-center z-50 bg-green-500"
           onClick={closeModal}
         >
           <div className="text-white text-center">
-            {pinStatus === "success" ? (
-              <>
-                <CheckCircle className="h-24 w-24 mb-4 mx-auto" />
-                <h2 className="text-4xl font-bold mb-2">Sucesso!</h2>
-                <p className="text-xl">PIN correto.</p>
-              </>
-            ) : (
-              <>
-                <XCircle className="h-24 w-24 mb-4 mx-auto" />
-                <h2 className="text-4xl font-bold mb-2">Erro!</h2>
-                <p className="text-xl">PIN incorreto. Tente novamente.</p>
-              </>
-            )}
+            <CheckCircle className="h-24 w-24 mb-4 mx-auto" />
+            <h2 className="text-4xl font-bold mb-2">Sucesso!</h2>
+            <p className="text-xl">PIN correto.</p>
           </div>
         </div>
       )}
