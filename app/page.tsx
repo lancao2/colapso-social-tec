@@ -125,8 +125,7 @@ export default function PinPage() {
       </div>
       <div className="w-full max-w-md">
         <p className="text-sm text-gray-600 mb-4 text-center">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+         Selecione o Cenario para continuar.
         </p>
         <div className="grid grid-cols-3 gap-4">
           <Button
